@@ -1,0 +1,21 @@
+---
+# Example Inventory for /etc/hosts management
+
+all:
+  hosts:
+    node1:
+      ansible_host: 192.0.2.11
+    node2:
+      ansible_host: 192.0.2.12
+
+  children:
+    managed_hosts:
+      hosts:
+        node1: {}
+        node2: {}
+
+  vars:
+    ansible_user: ansible
+    # Optionally set per-host IP used for /etc/hosts rendering:
+    # node1:
+    #   etc_hosts_ip: 10.0.0.21

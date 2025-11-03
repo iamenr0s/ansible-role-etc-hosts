@@ -1,0 +1,23 @@
+---
+
+# Whether to manage the localhost line (127.0.0.1)
+etc_hosts_manage_localhost: true
+
+# Control which names appear on the localhost line
+etc_hosts_localhost_include_fqdn: true
+etc_hosts_localhost_include_hostname: true
+etc_hosts_localhost_add_localhost: true
+etc_hosts_localhost_extra_names: []
+
+# Whether to manage a block with inventory/extra hosts
+etc_hosts_manage_inventory_hosts: true
+
+# Limit groups from which to render inventory hosts (default: all)
+# Example: ["web", "db"]
+etc_hosts_groups_to_manage: []
+
+# Additional static host entries you want to add
+# Example:
+# etc_hosts_entries:
+#   - { ip: "10.0.0.10", names: ["db01.example.com", "db01"] }
+etc_hosts_entries: []

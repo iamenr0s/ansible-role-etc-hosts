@@ -1,0 +1,21 @@
+{% set selected_hosts =
+  (etc_hosts_groups_to_manage | length > 0)
+  | ternary(
+      (etc_hosts_groups_to_manage
+        | map('extract', groups)
+        | map('list')
+        | sum(start=[])),
+      (groups['all'] | default([]))
+    )
+%}
+# Managed host entries
+{% for h in selected_hosts %}
+{% set hv = hostvars[h] | default({}) %}
+{% set ip = (hv.get('etc_hosts_ip') or hv.get('ansible_host') or hv.get('ansible_default_ipv4', {}).get('address')) %}
+{% if ip is not none %}
+{{ ip }} {{ hv.ansible_fqdn | default(h) }} {{ h }}
+{% endif %}
+{% endfor %}
+{% for e in (etc_hosts_entries | default([])) %}
+{{ e.ip }} {{ e.names | join(' ') }}
+{% endfor %}

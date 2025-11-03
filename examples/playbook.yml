@@ -1,0 +1,27 @@
+---
+
+- name: Manage /etc/hosts with role examples
+  hosts: all
+  become: true
+  gather_facts: true
+
+  vars:
+    # Include FQDN and hostname on localhost line
+    etc_hosts_localhost_include_fqdn: true
+    etc_hosts_localhost_include_hostname: true
+    etc_hosts_localhost_add_localhost: true
+    # Add an extra alias example
+    etc_hosts_localhost_extra_names:
+      - "{{ inventory_hostname }}.local"
+
+    # Only render entries for the group defined in inventory
+    etc_hosts_groups_to_manage:
+      - managed_hosts
+
+    # Additional static entries appended to the block
+    etc_hosts_entries:
+      - { ip: "10.0.0.10", names: ["db01.example.com", "db01"] }
+      - { ip: "10.0.0.11", names: ["web01.example.com", "web01"] }
+
+  roles:
+    - role: iamenr0s.ansible_role_etc_hosts

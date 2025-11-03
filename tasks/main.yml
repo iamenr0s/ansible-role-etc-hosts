@@ -1,0 +1,38 @@
+---
+
+# Role - Main Tasks
+# This role implements ...
+
+- name: Etc Hosts | Compute names to use on localhost line
+  ansible.builtin.set_fact:
+    etc_hosts_localhost_names: >-
+      {{
+        ((etc_hosts_localhost_include_fqdn | bool)
+          | ternary([ansible_fqdn | default(inventory_hostname)], []))
+        + ((etc_hosts_localhost_include_hostname | bool)
+          | ternary([ansible_hostname | default(inventory_hostname)], []))
+        + ((etc_hosts_localhost_add_localhost | bool)
+          | ternary(['localhost'], []))
+        + (etc_hosts_localhost_extra_names | default([]))
+      }}
+  when: etc_hosts_manage_localhost | bool
+
+- name: Etc Hosts | Update 127.0.0.1 line with FQDN and HOST
+  ansible.builtin.lineinfile:
+    path: /etc/hosts
+    regexp: '^127\.0\.0\.1.*'
+    line: "127.0.0.1\t{{ etc_hosts_localhost_names | join(' ') }}"
+    state: present
+    backup: false
+    unsafe_writes: true
+  when: etc_hosts_manage_localhost | bool
+
+- name: Etc Hosts | Render inventory and extra host entries block
+  ansible.builtin.blockinfile:
+    path: /etc/hosts
+    marker: "# {mark} ANSIBLE MANAGED HOSTS"
+    insertafter: EOF
+    backup: false
+    unsafe_writes: true
+    block: "{{ lookup('template', 'hosts_block.j2') }}"
+  when: etc_hosts_manage_inventory_hosts | bool
