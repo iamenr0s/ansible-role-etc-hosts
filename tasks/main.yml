@@ -1,8 +1,5 @@
 ---
 
-# Role - Main Tasks
-# This role implements ...
-
 - name: Etc Hosts | Compute names to use on localhost line
   ansible.builtin.set_fact:
     etc_hosts_localhost_names: >-
@@ -16,6 +13,7 @@
         + (etc_hosts_localhost_extra_names | default([]))
       }}
   when: etc_hosts_manage_localhost | bool
+  tags: etc_hosts
 
 - name: Etc Hosts | Update 127.0.0.1 line with FQDN and HOST
   ansible.builtin.lineinfile:
@@ -26,6 +24,7 @@
     backup: false
     unsafe_writes: true
   when: etc_hosts_manage_localhost | bool
+  tags: etc_hosts
 
 - name: Etc Hosts | Render inventory and extra host entries block
   ansible.builtin.blockinfile:
@@ -36,3 +35,4 @@
     unsafe_writes: true
     block: "{{ lookup('template', 'hosts_block.j2') }}"
   when: etc_hosts_manage_inventory_hosts | bool
+  tags: etc_hosts

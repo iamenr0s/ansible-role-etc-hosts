@@ -1,0 +1,9 @@
+---
+
+# Exercise the inventory-block feature: restrict rendering to a known group
+# (rather than the default "all groups") and add a static extra entry, so
+# verify.yml has concrete, deterministic content to assert against.
+etc_hosts_groups_to_manage:
+  - instance_group
+etc_hosts_entries:
+  - { ip: "10.0.0.50", names: ["extra.example.com", "extra"] }

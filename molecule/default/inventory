@@ -1,0 +1,10 @@
+[all]
+instance ansible_connection=docker ansible_user=root etc_hosts_ip=10.0.0.99
+
+[instance_group]
+instance
+
+[all:vars]
+ansible_become=false
+ansible_python_interpreter=/usr/bin/python3
+ansible_remote_tmp=/tmp/.ansible-root/tmp

@@ -6,26 +6,32 @@ galaxy_info:
   license: MIT
   min_ansible_version: "2.9"
   platforms:
-    - name: "Debian"
-      versions:
-        - "bullseye"
-        - "bookworm"
+    # Rocky Linux is covered by "EL" here: ansible-lint's schema[meta] rule
+    # only accepts Vagrant-box-style versions (6.1/7.1/7.2/all) for a
+    # "Rocky"/"RockyLinux" platform name, not plain major versions like "8".
     - name: "EL"
       versions:
         - "8"
         - "9"
+        - "10"
+    - name: "AlmaLinux"
+      versions:
+        - "8"
+        - "9"
+        - "10"
     - name: "Fedora"
       versions:
-        - "38"
-        - "39"
-    - name: "Rocky"
+        - "42"
+        - "43"
+        - "44"
+    - name: "Debian"
       versions:
-        - "8.0"
-        - "9.0"
+        - "bookworm"
+        - "trixie"
     - name: "Ubuntu"
       versions:
-        - "focal"
         - "jammy"
+        - "noble"
   galaxy_tags:
     - networking
     - hosts

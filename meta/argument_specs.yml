@@ -1,0 +1,57 @@
+---
+
+argument_specs:
+  main:
+    short_description: >-
+      Manages /etc/hosts: updates the 127.0.0.1 (localhost) line and renders
+      a managed block of inventory-derived and static host entries.
+    options:
+      etc_hosts_manage_localhost:
+        description: Whether to manage the 127.0.0.1 (localhost) line.
+        type: bool
+        default: true
+      etc_hosts_localhost_include_fqdn:
+        description: Include the host's FQDN on the localhost line.
+        type: bool
+        default: true
+      etc_hosts_localhost_include_hostname:
+        description: Include the host's short hostname on the localhost line.
+        type: bool
+        default: true
+      etc_hosts_localhost_add_localhost:
+        description: Keep the literal "localhost" alias on the localhost line.
+        type: bool
+        default: true
+      etc_hosts_localhost_extra_names:
+        description: Additional aliases to append to the localhost line.
+        type: list
+        elements: str
+        default: []
+      etc_hosts_manage_inventory_hosts:
+        description: >-
+          Whether to render a managed block of host entries derived from the
+          inventory and etc_hosts_entries.
+        type: bool
+        default: true
+      etc_hosts_groups_to_manage:
+        description: >-
+          Limit which inventory groups are rendered into the managed block.
+          An empty list renders every host in the "all" group.
+        type: list
+        elements: str
+        default: []
+      etc_hosts_entries:
+        description: Additional static host entries to append to the managed block.
+        type: list
+        elements: dict
+        default: []
+        options:
+          ip:
+            description: IP address for the entry.
+            type: str
+            required: true
+          names:
+            description: Hostnames/aliases for the entry.
+            type: list
+            elements: str
+            required: true

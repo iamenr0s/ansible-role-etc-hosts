@@ -1,0 +1,46 @@
+---
+
+- name: Verify
+  hosts: all
+  gather_facts: true
+  become: false
+
+  tasks:
+    - name: Verify | Read /etc/hosts content
+      ansible.builtin.slurp:
+        src: /etc/hosts
+      register: __verify_etc_hosts_raw
+
+    - name: Verify | Decode /etc/hosts content
+      ansible.builtin.set_fact:
+        __verify_etc_hosts: "{{ __verify_etc_hosts_raw.content | b64decode }}"
+
+    - name: Verify | Assert the 127.0.0.1 line includes fqdn, hostname, and localhost
+      ansible.builtin.assert:
+        that:
+          - __verify_etc_hosts is regex('(?m)^127\.0\.0\.1\t.*' ~ ansible_fqdn ~ '.*')
+          - __verify_etc_hosts is regex('(?m)^127\.0\.0\.1\t.*' ~ ansible_hostname ~ '.*')
+          - __verify_etc_hosts is regex('(?m)^127\.0\.0\.1\t.*\blocalhost\b.*')
+        fail_msg: "127.0.0.1 line is missing fqdn/hostname/localhost: {{ __verify_etc_hosts }}"
+
+    - name: Verify | Assert the managed block markers are present
+      ansible.builtin.assert:
+        that:
+          - "'# BEGIN ANSIBLE MANAGED HOSTS' in __verify_etc_hosts"
+          - "'# END ANSIBLE MANAGED HOSTS' in __verify_etc_hosts"
+        fail_msg: "Managed hosts block markers not found in /etc/hosts"
+
+    - name: Verify | Assert the inventory-derived entry for this host is rendered
+      ansible.builtin.assert:
+        that:
+          - __verify_etc_hosts is regex('(?m)^10\.0\.0\.99\s.*\binstance\b\s*$')
+        fail_msg: >-
+          Expected an inventory-derived entry for 'instance' (etc_hosts_ip=10.0.0.99,
+          restricted to etc_hosts_groups_to_manage: [instance_group]) in /etc/hosts:
+          {{ __verify_etc_hosts }}
+
+    - name: Verify | Assert the static etc_hosts_entries entry is rendered
+      ansible.builtin.assert:
+        that:
+          - "'10.0.0.50 extra.example.com extra' in __verify_etc_hosts"
+        fail_msg: "Static etc_hosts_entries entry not found in /etc/hosts: {{ __verify_etc_hosts }}"
