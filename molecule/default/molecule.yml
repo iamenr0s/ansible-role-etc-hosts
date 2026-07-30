@@ -18,6 +18,12 @@ platforms:
     pre_build_image: true
 provisioner:
   name: ansible
+  inventory:
+    hosts:
+      instance_group:
+        hosts:
+          instance:
+            etc_hosts_ip: "10.0.0.99"
   playbooks:
     converge: ${MOLECULE_PLAYBOOK:-converge.yml}
     prepare: prepare.yml

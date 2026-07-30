@@ -20,7 +20,7 @@
         that:
           - __verify_etc_hosts is regex('(?m)^127\.0\.0\.1\t.*' ~ ansible_fqdn ~ '.*')
           - __verify_etc_hosts is regex('(?m)^127\.0\.0\.1\t.*' ~ ansible_hostname ~ '.*')
-          - __verify_etc_hosts is regex('(?m)^127\.0\.0\.1\t.*\blocalhost\b.*')
+          - __verify_etc_hosts is regex('(?m)^127\.0\.0\.1\t.*\\blocalhost\\b.*')
         fail_msg: "127.0.0.1 line is missing fqdn/hostname/localhost: {{ __verify_etc_hosts }}"
 
     - name: Verify | Assert the managed block markers are present
@@ -33,7 +33,7 @@
     - name: Verify | Assert the inventory-derived entry for this host is rendered
       ansible.builtin.assert:
         that:
-          - __verify_etc_hosts is regex('(?m)^10\.0\.0\.99\s.*\binstance\b\s*$')
+          - __verify_etc_hosts is regex('(?m)^10\.0\.0\.99\s.*\\binstance\\b\s*$')
         fail_msg: >-
           Expected an inventory-derived entry for 'instance' (etc_hosts_ip=10.0.0.99,
           restricted to etc_hosts_groups_to_manage: [instance_group]) in /etc/hosts:
