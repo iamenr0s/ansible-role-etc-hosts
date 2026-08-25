@@ -78,6 +78,11 @@ jobs:
       - name: Install test dependencies.
         run: pip3 install "${{ matrix.ansible_pin || 'ansible' }}" molecule molecule-plugins[docker] docker cryptography
 
+      - name: Sync podman & crun (avoid OCI runtime version-skew failures on hosted runners).
+        run: |
+          sudo apt-get update
+          sudo apt-get install --only-upgrade -y podman crun
+
       - name: Run Molecule tests.
         run: molecule test
         env:
